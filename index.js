@@ -63,7 +63,19 @@ class SimpleUpload extends HTMLElement {
                 body: formData
             }).then(response => {
                 if (response.ok) {
-                    this.event("uploadOK", response.json());
+                    response.json().then(d => {
+                        this.event("uploadOK", d)
+                    }).catch(error => {
+                        response.text().then(d => {
+                            this.event("uploadOK", { body: d })
+                        }).catch(error => {
+                            let msg =
+                                { status: 999,
+                                  text: error.toString()
+                                };
+                            this.event("uploadError", msg);
+                        })
+                    })
                 }  else {
                     let msg =
                         { status: response.status,
@@ -75,7 +87,7 @@ class SimpleUpload extends HTMLElement {
             .catch(error => {
                 let msg =
                     { status: 999,
-                      text: error.message
+                      text: error.toString()
                     };
                 this.event("uploadError", msg);
                 console.error(msg);
