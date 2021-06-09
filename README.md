@@ -49,7 +49,7 @@ into the `Authorization` header as bearer token.
 With `multiple` you can choose whether you want to allow that several
 files can be selected.
 
-The `accept` parameter lists the MIME types of the files can be
+The `accept` parameter lists the MIME types of the files that can be
 selected in the dialog.
 
 There are three outgoing events: When the upload starts,
@@ -93,10 +93,16 @@ In order to activate the proxy, add this record to the db:
 
 Notes:
  - The URL of the file server *must* be a secure one (https).
+ - A `proxyType` of `uplaodViaPUT` means that the file is sent to the
+   file server with a `PUT` request.
  - The `proxyType` can also be set to `uploadViaPUTEnableGET` and in this case
    the proxy also responds to GET requests for the already uploaded files.
+ - The URL of the PUT requests is calculated by taking the URL of the
+   file server, and by appending further path components. First,
+   any path from the proxy request is added. Then, the file name of the
+   uploaded file is added.
 
-Then, configure the simple-upload component like this:
+After that, configure the simple-upload component like this:
 
  - `url`: set this to `env.backendBaseURL + "/" + env.app + "/proxy/myFunnyProxyID/"`
  - `token`: set this to a valid AMP token, e.g. `env.token() |> string.ofToken`
